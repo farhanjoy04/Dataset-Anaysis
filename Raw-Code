@@ -1,0 +1,52 @@
+import openpyxl as os
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
+data = pd.read_csv(r"D:\\7th Semester\\CSE 303\Bike Sales Dashboard.csv")
+print(data)
+
+numerical_columns = data.select_dtypes(include=[np.number])
+descriptive_stats = numerical_columns.describe()
+print("\nDescriptive Statistics:")
+print(descriptive_stats)
+
+
+target_counts = data['Purchased Bike'].value_counts()
+balance_percentage = (target_counts / len(data)) * 100
+print("\nBalance Percentage:")
+print(balance_percentage)
+
+target_counts.plot(kind='bar', color=['skyblue', 'orange'])
+plt.title('Distribution of Purchased Bike')
+plt.xlabel('Purchased Bike')
+plt.ylabel('Frequency')
+plt.show()
+
+# Pie chart for "Martial Status"
+data['Martial Status'].value_counts().plot(kind='pie', autopct='%1.1f%%', startangle=90, colors=['gold', 'lightblue'])
+plt.title('Martial Status Distribution')
+plt.ylabel('')
+plt.show()
+
+
+import seaborn as sns
+plt.figure(figsize=(10, 6))
+sns.heatmap(numerical_columns.corr(), annot=True, cmap='coolwarm', fmt='.2f')
+plt.title('Correlation Heatmap')
+plt.show()
+
+
+# 7. Handle missing values (if any)
+# Assuming numerical columns: Fill missing values with mean
+# Assuming categorical columns: Fill missing values with mode
+for col in data.columns:
+    if data[col].dtype == 'object':
+        data[col].fillna(data[col].mode()[0], inplace=True)
+    else:
+        data[col].fillna(data[col].mean(), inplace=True)
+
+print("\nMissing Values After Handling:")
+print(data.isnull().sum())
